@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/custom.css" />
+    <title>Blockchain Wallet</title>
+  </head>
+  <body>
+    <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+      <div class="container">
+        <a href="/" class="navbar-brand">B-Wallet</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="container" style="margin-top: 70px">
+      <div id="loading"></div>
+      <div id="walletActionButtons" class="card" style="display: none">
+        <div class="card-body">
+          <button
+            type="button"
+            id="btnCreateWallet"
+            class="btn btn-block btn-primary"
+            onclick="togglePasscodeModal()"
+          >
+            <ion-icon name="add-outline"></ion-icon> Create Wallet
+          </button>
+          <button
+            type="button"
+            id="btnRestoreWallet"
+            class="btn btn-block btn-success"
+            onclick="toggleCheckPasscodeModal()"
+          >
+            <ion-icon name="wallet-outline"></ion-icon>
+            Restore Wallet
+          </button>
+        </div>
+      </div>
+
+      <div id="hasWallet" style="display: none">
+        <div id="walletSection" class="card card-box">
+          <div class="card-body">
+            <p>
+              Wallet Address :
+              <strong><span id="walletAddress"></span></strong>
+            </p>
+            <p>
+              Balance : <strong><span id="myBalance">0.0</span></strong>
+            </p>
+            <p>
+              Mnemonic : <strong><span id="mnemonicPhrase"></span></strong>
+            </p>
+          </div>
+        </div>
+
+        <div id="transferSection" class="card card-box">
+          <div class="card-body">
+            <p>Transfer Token</p>
+            <div class="form-group">
+              <input
+                type="text"
+                placeholder="Enter receiver wallet address"
+                name="inputSendToAddress"
+                id="inputSendToAddress"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                placeholder="Enter token amount"
+                type="number"
+                name="inputAmount"
+                id="inputAmount"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group" id="sendEther">
+              <button
+                onclick="sendEther()"
+                type="button"
+                id="btnSendToken"
+                class="btn btn-primary"
+              >
+                <ion-icon name="send-outline"></ion-icon>
+                Send Token
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="networkSection" class="card card-box">
+          <div class="card-body">
+            <p>Network Settings</p>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input name="network" 
+                value="localhost"
+                 id="localhost" 
+                 type="radio" 
+                 class="form-check-input" 
+                 name="optradio" />
+                 Local Network
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input
+                  name="network"
+                  value="rumsan"
+                  id="rumsan"
+                  type="radio"
+                  class="form-check-input"
+                  name="optradio"
+                />Rumsan Network
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input
+                  name="network"
+                  value="rinkeby"
+                  id="rinkeby"
+                  type="radio"
+                  class="form-check-input"
+                  name="optradio"
+                />Rinkeby Network
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input
+                  name="network"
+                  value="mainnet"
+                  id="mainnet"
+                  type="radio"
+                  class="form-check-input"
+                  name="optradio"
+                />Mainnet (Ethereum)
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div id="signatureSection" class="card card-box">
+          <div class="card-body">
+            <p>Sign Message</p>
+            <div class="form-group">
+              <label>Enter Your Message to sign</label>
+              <textarea class="form-control" id="inputMsg" rows="5"></textarea>
+            </div>
+            <div class="form-group">
+              <button
+                onclick="signMessage()"
+                id="btnSignMessage"
+                type="button"
+                class="btn btn-primary"
+              >
+                Sign
+              </button>
+            </div>
+            <p>
+              Signature: <strong><span id="signedMessage"></span></strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
+    <script src="assets/js/helpers.js"></script>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>
+
+<!-- ========Passcode Modal======= -->
+<div id="mdlPasscode" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create Wallet</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" id="passcodeComp">
+          <label>Enter 6-digit Passcode</label>
+          <input
+            type="text"
+            placeholder="x-x-x-x-x-x"
+            maxlength="6"
+            id="inputPasscode"
+            name="inputPasscode"
+            onkeypress="return isNumberKey(event)"
+            class="form-control"
+          />
+        </div>
+        <div class="form-group" id="confirmPasscodeComp" style="display: none">
+          <label>Please re-enter your passcode</label>
+          <input
+            type="text"
+            placeholder="x-x-x-x-x-x"
+            maxlength="6"
+            id="inputConfirmPasscode"
+            name="inputConfirmPasscode"
+            onkeypress="return isNumberKey(event)"
+            class="form-control"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ========Passcode Modal======= -->
+
+<!-- ========Mnemonic Modal======= -->
+<div id="mdlMnemonicRestore" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Restore Wallet</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Enter your secret mnemonic</label>
+          <textarea class="form-control" id="inputMnemonic" rows="5"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="form-group">
+          <button id="btnSubmitMnemonic" type="button" class="btn btn-primary">
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ========mdlMnemonic Modal======= -->
+
+<!-- ========Check Passcode Modal======= -->
+<div id="mdlCheckPasscode" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Verify Passcode</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Please re-enter your passcode</label>
+          <input
+            type="text"
+            placeholder="x-x-x-x-x-x"
+            maxlength="6"
+            id="inputVerifyPasscode"
+            name="inputVerifyPasscode"
+            onkeypress="return isNumberKey(event)"
+            class="form-control"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ========mdlMnemonic Modal======= -->
