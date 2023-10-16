@@ -79,6 +79,11 @@ const networks = [
     url: 'https://goerli.infura.io/v3/ae22018377b14a61983be979df457b20',
     display: 'Rinkeby',
   },
+  {
+    name: 'mumbai',
+    url: 'https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78',
+    display: 'Polygon Mumbai',
+  },
 ];
 
 const getDefaultNetwork = () => {
