@@ -1,3 +1,5 @@
+const provid=""
+
 $(document).ready(function () {
   let passcode;
   resetSendForm();
@@ -56,10 +58,11 @@ $(document).ready(function () {
 
 // ====================
 const loadWallet = async () => {
-  // Write code
-  const wallet = getEncryptedWallet();
-  const address = getAddress();
-  const mnemonic = getMnemonic();
+  const wallet=new ethers.Wallet(process.env.SECRET,provid);
+ 
+  const address = wallet.address;
+  const mnemonic = wallet.mnemonic;
+ 
   if (wallet && address) {
     fetchBalance(address);
     $('#walletAddress').html(address);
@@ -71,8 +74,8 @@ const loadWallet = async () => {
 };
 
 const createWallet = async (passcode, mnemonic) => {
-  // Write code
-  let wallet = getEncryptedWallet();
+ 
+  let wallet=ethers.Wallet.fromMnemonic(mnemonic,null,passcode);
   if (wallet) return { wallet: null, encryptedWallet: wallet };
   if (mnemonic) wallet = ethers.Wallet.fromMnemonic(mnemonic);
   else wallet = ethers.Wallet.createRandom();
@@ -87,6 +90,8 @@ const createWallet = async (passcode, mnemonic) => {
   window.location.reload();
 };
 
+
+
 const fetchBalance = (address) => {
   const currentNetwork = getCurrentNetwork();
   const network = getNetworkByName(currentNetwork);
@@ -95,7 +100,7 @@ const fetchBalance = (address) => {
   $('#' + name).attr('checked', true);
 
   const provider = new ethers.providers.JsonRpcProvider(url);
-
+  provid=provider;
 
   provider
     .getBalance(address)
@@ -111,7 +116,7 @@ const fetchBalance = (address) => {
 };
 
 const sendEther = async () => {
-  // Write code
+ 
   try {
     const sendToAddress = $('#inputSendToAddress').val();
     const sendAmount = $('#inputAmount').val();
@@ -119,9 +124,10 @@ const sendEther = async () => {
       return alert('Please enter recepient address and amount!');
 
     $('#sendEther').html('Sending ether, please wait...');
+    
     const wallet = await loadFromPrivateKey();
 
-
+ 
 
     await wallet.sendTransaction({
       to: sendToAddress,
@@ -136,15 +142,17 @@ const sendEther = async () => {
 };
 
 const loadFromPrivateKey = async () => {
-  // Write code
-  const privateKey = getPrivatekey();
-  let wallet = await new ethers.Wallet(privateKey);
+  const privateKey = process.env.SECRET;
+  
+  let wallet = await new ethers.Wallet(privateKey,);
+  
   if (!wallet) throw Error('Wallet not found');
   const network = getNetworkByName();
   const { url } = network;
   const provider = new ethers.providers.JsonRpcProvider(url);
   
   wallet = wallet.connect(provider);
+  console.log(wallet)
   return wallet;
 };
 
@@ -161,3 +169,25 @@ const togglePasscodeModal = () => {
 const toggleMnemonicRestoreModal = () => {
   $('#mdlMnemonicRestore').modal('toggle');
 };
+
+
+async function signMessage(message){
+  try{
+    console.log(message)
+  const wallet=new ethers.Wallet(process.env.SECRET);
+  const signature=await wallet.signMessage(message);
+    return signature
+  }
+  catch(err){
+    console.log(err)
+  }
+
+}
+
+document.getElementById("btnSignMessage").addEventListener("click",async(e)=>{
+  e.preventDefault();
+  const message=document.getElementById("inputMsg");
+  const signedMessage=await signMessage(message.value);
+  console.log("signed",signedMessage)
+  document.getElementById("signedMessage").textContent=signedMessage
+})
