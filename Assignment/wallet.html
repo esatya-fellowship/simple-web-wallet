@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Wallet</title>
+  </head>
+  <body>
+    <h1>Web Wallet</h1>
+    <p id="address">Wallet Address:</p>
+    <form id="signForm">
+      <label for="msg">Message:</label>
+      <input type="text" id="msg" />
+      <button id="signBtn" type="submit">Sign Message</button>
+    </form>
+
+    <div id="output"></div>
+
+    <script type="module" src="deploy.js"></script>
+    <script src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
+  </body>
+</html>
