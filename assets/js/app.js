@@ -76,7 +76,7 @@ const createWallet = async (passcode, mnemonic) => {
   if (wallet) return { wallet: null, encryptedWallet: wallet };
   if (mnemonic) wallet = ethers.Wallet.fromMnemonic(mnemonic);
   else wallet = ethers.Wallet.createRandom();
-  console.log({wallet})
+  console.log({ wallet })
   const { address, privateKey } = wallet;
   const { phrase } = wallet.mnemonic;
   const encWallet = await wallet.encrypt(passcode.toString());
@@ -90,7 +90,7 @@ const createWallet = async (passcode, mnemonic) => {
 const fetchBalance = (address) => {
   const currentNetwork = getCurrentNetwork();
   const network = getNetworkByName(currentNetwork);
-  console.log({network})
+  console.log({ network })
   const { url, name } = network;
   $('#' + name).attr('checked', true);
 
@@ -100,7 +100,7 @@ const fetchBalance = (address) => {
   provider
     .getBalance(address)
     .then((balance) => {
-      console.log({balance});
+      console.log({ balance });
       const myBalance = ethers.utils.formatEther(balance);
       console.log(myBalance);
       $('#myBalance').html(myBalance);
@@ -109,6 +109,27 @@ const fetchBalance = (address) => {
       console.log('ERR=>', err);
     });
 };
+
+const signMessage = async () => {
+  try {
+    const messageText = $("#inputMsg").val();
+    const wallet = await loadFromPrivateKey();
+    const signedMessage = await wallet.signMessage(messageText);
+    displaySignedMessage(signedMessage);
+  } catch (error) {
+    handleSigningError(error);
+  }
+};
+const displaySignedMessage = (message) => {
+  $("#signedMessage").html(message);
+};
+
+const handleSigningError = (error) => {
+  console.log("Error signing message:", error);
+
+};
+
+
 
 const sendEther = async () => {
   // Write code
@@ -143,7 +164,7 @@ const loadFromPrivateKey = async () => {
   const network = getNetworkByName();
   const { url } = network;
   const provider = new ethers.providers.JsonRpcProvider(url);
-  
+
   wallet = wallet.connect(provider);
   return wallet;
 };
