@@ -1,53 +1,53 @@
 const saveMnemonic = (mnemonic) => {
-  localStorage.setItem('mnemonic', mnemonic);
+  localStorage.setItem("mnemonic", mnemonic);
 };
 
 const getMnemonic = () => {
-  return localStorage.getItem('mnemonic');
+  return localStorage.getItem("mnemonic");
 };
 
 const saveEncryptedWallet = (wallet) => {
-  localStorage.setItem('encWallet', wallet);
+  localStorage.setItem("encWallet", wallet);
 };
 
 const getEncryptedWallet = () => {
-  return localStorage.getItem('encWallet');
+  return localStorage.getItem("encWallet");
 };
 
 const savePrivateKey = (privateKey) => {
-  localStorage.setItem('privateKey', privateKey);
+  localStorage.setItem("privateKey", privateKey);
 };
 
 const getPrivatekey = () => {
-  return localStorage.getItem('privateKey');
+  return localStorage.getItem("privateKey");
 };
 
 const saveAddress = (address) => {
-  localStorage.setItem('address', address);
+  localStorage.setItem("address", address);
 };
 
 const getAddress = () => {
-  return localStorage.getItem('address');
+  return localStorage.getItem("address");
 };
 
 const saveCurrentNetwork = (network) => {
-  localStorage.setItem('currentNetwork', network);
+  localStorage.setItem("currentNetwork", network);
 };
 
 const getCurrentNetwork = () => {
-  return localStorage.getItem('currentNetwork');
+  return localStorage.getItem("currentNetwork");
 };
 
 const resetSendForm = () => {
-  $('#inputSendToAddress').val('');
-  $('#inputAmount').val('');
+  $("#inputSendToAddress").val("");
+  $("#inputAmount").val("");
 };
 
 const resetPasscodeFields = () => {
-  $('#inputPasscode').val('');
-  $('#inputConfirmPasscode').val('');
-  $('#inputVerifyPasscode').val('');
-  $('#inputMnemonic').val('');
+  $("#inputPasscode").val("");
+  $("#inputConfirmPasscode").val("");
+  $("#inputVerifyPasscode").val("");
+  $("#inputMnemonic").val("");
 };
 
 function isNumberKey(evt) {
@@ -59,25 +59,30 @@ function isNumberKey(evt) {
 
 const networks = [
   {
-    name: 'localhost',
-    url: 'http://localhost:8545',
-    display: 'Local Network',
+    name: "localhost",
+    url: "http://localhost:8545",
+    display: "Local Network",
     default: true,
   },
   {
-    name: 'rumsan',
-    url: 'https://chain.esatya.io',
-    display: 'Rumsan Network',
+    name: "rumsan",
+    url: "https://chain.esatya.io",
+    display: "Rumsan Network",
   },
   {
-    name: 'mainnet',
-    url: 'https://mainnet.infura.io/v3/ae22018377b14a61983be979df457b20',
-    display: 'Mainnet (Ethereum)',
+    name: "mainnet",
+    url: "https://mainnet.infura.io/v3/ae22018377b14a61983be979df457b20",
+    display: "Mainnet (Ethereum)",
   },
   {
-    name: 'rinkeby',
-    url: 'https://goerli.infura.io/v3/ae22018377b14a61983be979df457b20',
-    display: 'Rinkeby',
+    name: "rinkeby",
+    url: "https://goerli.infura.io/v3/ae22018377b14a61983be979df457b20",
+    display: "Rinkeby",
+  },
+  {
+    name: "polygon",
+    url: "https://polygon-mainnet.g.alchemy.com/v2/90jPNNhbwrP8iPRzEubJVlPlAamu2SFd",
+    display: "Polygon",
   },
 ];
 
